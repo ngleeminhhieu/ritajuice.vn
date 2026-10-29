@@ -4,6 +4,8 @@ const DURATION = 700;
 const IDLE_MS = 120;
 const LOCK_MS = 200;
 const INPUT_MS = 1000;
+const EXTERNAL_MS = 600;
+const SLACK = 0.1;
 const KEYS_DOWN = new Set(["ArrowDown", "PageDown", " "]);
 const KEYS_UP = new Set(["ArrowUp", "PageUp"]);
 
@@ -43,19 +45,21 @@ export default function SectionSnapModule() {
   let lockUntil = 0;
   let lockDir = 0;
   let lastInput = 0;
+  let pressed = false;
 
   const restingTop = (section, headerBottom) => {
     const rest = window.innerHeight - section.offsetHeight;
     return rest >= 0 && rest <= headerBottom + 2 ? rest : null;
   };
 
-  const gapToSection = () => {
+  const gapToSection = (inView) => {
     const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
     for (const section of sections) {
       const top = restingTop(section, headerBottom);
       if (top === null) continue;
       const gap = section.getBoundingClientRect().top - top;
-      if (gap > 1 && gap <= window.innerHeight * ZONE) return gap;
+      const reach = inView ? window.innerHeight * (1 + SLACK) - top : window.innerHeight * ZONE;
+      if (gap > 1 && gap <= reach) return gap;
     }
     return null;
   };
@@ -77,6 +81,20 @@ export default function SectionSnapModule() {
   const gapFromFooter = () => {
     const offset = lastSectionOffset();
     return offset !== null && offset < -1 ? offset : null;
+  };
+
+  const gapToPrevious = () => {
+    const headerBottom = header ? header.getBoundingClientRect().bottom : 0;
+    for (const section of sections) {
+      const prev = section.previousElementSibling;
+      const top = restingTop(section, headerBottom);
+      if (!prev || top === null) continue;
+      const offset = section.getBoundingClientRect().top - top;
+      if (offset < -1 || offset > window.innerHeight * (1 + SLACK) - top) continue;
+      const gap = Math.max(prev.getBoundingClientRect().top - headerBottom, -window.scrollY);
+      if (gap < -1) return gap;
+    }
+    return null;
   };
 
   const glide = (gap) => {
@@ -108,7 +126,7 @@ export default function SectionSnapModule() {
     if (animating || ((down ? 1 : -1) === lockDir && now < lockUntil)) {
       if (!animating) lockUntil = now + LOCK_MS;
     } else {
-      gap = down ? gapToSection() ?? gapToFooter() : gapFromFooter();
+      gap = down ? gapToSection(true) ?? gapToFooter() : gapFromFooter() ?? gapToPrevious();
       if (gap === null) return;
     }
     event.preventDefault();
@@ -135,15 +153,32 @@ export default function SectionSnapModule() {
   const settle = () => {
     if (animating || performance.now() < lockUntil || direction <= 0) return;
     if (!desktop.matches || performance.now() - lastInput < INPUT_MS) return;
-    const gap = gapToSection();
+    const gap = gapToSection(false);
     if (gap !== null) glide(gap);
   };
+
+  window.addEventListener("pointerdown", () => {
+    pressed = true;
+  }, { capture: true, passive: true });
+  ["pointerup", "pointercancel", "blur"].forEach((type) => {
+    window.addEventListener(type, () => {
+      pressed = false;
+    }, { capture: true, passive: true });
+  });
 
   window.addEventListener("scroll", () => {
     const y = window.scrollY;
     if (!animating && y !== lastY) direction = Math.sign(y - lastY);
     lastY = y;
     window.clearTimeout(timer);
+    const now = performance.now();
+    if (!animating && !pressed && direction > 0 && desktop.matches && now >= lockUntil && now - lastInput > EXTERNAL_MS) {
+      const gap = gapToSection(true);
+      if (gap !== null) {
+        glide(gap);
+        return;
+      }
+    }
     timer = window.setTimeout(settle, IDLE_MS);
   }, { passive: true });
 }
