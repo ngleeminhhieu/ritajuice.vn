@@ -1,0 +1,14 @@
+<svg width="50" height="50" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Catalog — square typographic mark</title>
+  <g fill="#ffffff" fill-rule="evenodd">
+    <!-- CATA: geometric lettering drawn as shapes, with open square counters. -->
+    <path d="M14 6H6v18h8v-4.5H9.2v-9H14Z"/>
+    <path d="M16 6h8v18h-2.75v-6h-2.5v6H16ZM18.75 10.5V14h2.5v-3.5Z"/>
+    <path d="M26 6h8v4.5h-2.5V24h-3V10.5H26Z"/>
+    <path d="M36 6h8v18h-2.75v-6h-2.5v6H36ZM38.75 10.5V14h2.5v-3.5Z"/>
+    <!-- LOG: wider letters complete the square silhouette. -->
+    <path d="M6 26h4.5v13.5h6.8V44H6Z"/>
+    <path d="M19.3 26h11.4v18H19.3ZM23.6 30.5v9h2.8v-9Z"/>
+    <path d="M44 26H32.7v18H44V33.5h-6v3.6h2v2.4h-3.3v-9H44Z"/>
+  </g>
+</svg>

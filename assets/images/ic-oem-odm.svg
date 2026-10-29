@@ -1,0 +1,10 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>OEM / ODM — shared O with EM above DM</title>
+  <g fill="#ffffff" fill-rule="evenodd">
+    <path d="M2 2h11.5v36H2ZM6 7v26h3.5V7Z"/>
+    <path d="M24 2h-8.5v17H24v-3.5h-5.5v-3.25H23v-3.5h-4.5V5.5H24Z"/>
+    <path d="M26 19V2h3l3 5 3-5h3v17h-3V8l-3 5-3-5v11Z"/>
+    <path d="M15.5 21H21l3 3v11l-3 3h-5.5ZM18.5 24.5v10h1.25L21 33.25v-7.5l-1.25-1.25Z"/>
+    <path d="M26 38V21h3l3 5 3-5h3v17h-3V27l-3 5-3-5v11Z"/>
+  </g>
+</svg>

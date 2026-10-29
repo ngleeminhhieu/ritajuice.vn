@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="remove-white" x="0" y="0" width="100%" height="100%" color-interpolation-filters="sRGB">
+      <!-- This GIF's red/yellow interior stays below blue = 0.4. Feather the
+           pale edge pixels as well as the white matte without dimming the flag. -->
+      <feColorMatrix in="SourceGraphic" type="matrix" values="
+        1 0 0 0 0
+        0 1 0 0 0
+        0 0 1 0 0
+        0 0 -3 0 2.5" result="color-key"/>
+      <!-- Retain the GIF's existing transparency as well as the white key. -->
+      <feComposite in="SourceGraphic" in2="color-key" operator="in"/>
+    </filter>
+  </defs>
+</svg>
